@@ -2,6 +2,7 @@ package com.example.randomusername
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.randomusername.databinding.ActivityMainBinding
 import java.util.UUID
@@ -23,7 +24,11 @@ class MainActivity : AppCompatActivity() {
         setBtnsMinusAndPlus()
         setAdapter()
         binding.btnGenerate.setOnClickListener {
-            generateRandomUsername()
+            if (binding.etCount.text.toString().isNullOrBlank()) {
+                Toast.makeText(application, "Enter number", Toast.LENGTH_SHORT).show()
+            } else {
+                generateRandomUsername()
+            }
         }
 
     }
@@ -32,9 +37,10 @@ class MainActivity : AppCompatActivity() {
         val inputNumber = binding.etCount.text.toString().toInt()
 
         //алгоритм 1
-        val randomString1 = UUID.randomUUID().toString().substring(0,inputNumber)
+        val randomString1 = UUID.randomUUID().toString().substring(0, inputNumber)
         //алгоритм 2
-        val randomString2 =  ('A'..'z').map { it }.shuffled().subList(0, inputNumber).joinToString("")
+        val randomString2 =
+            ('A'..'z').map { it }.shuffled().subList(0, inputNumber).joinToString("")
         //алгоритм 3
         val characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
         val usernameBuilder = StringBuilder()
@@ -46,19 +52,47 @@ class MainActivity : AppCompatActivity() {
         }
         val randomString3 = usernameBuilder.toString()
         //алгоритм 4
-        val wordsList = listOf("A","E","O","unicorn","metal","black","rainbow","thresh","the","apple", "banana", "cat", "dog", "elephant", "flower", "guitar", "happiness", "boss", "man", "girl", "boy", "cool", "red", "sweet", "fast", "slow", "deep")
+        val wordsList = listOf(
+            "A",
+            "E",
+            "O",
+            "unicorn",
+            "metal",
+            "black",
+            "rainbow",
+            "thresh",
+            "the",
+            "apple",
+            "banana",
+            "cat",
+            "dog",
+            "elephant",
+            "flower",
+            "guitar",
+            "happiness",
+            "boss",
+            "man",
+            "girl",
+            "boy",
+            "cool",
+            "red",
+            "sweet",
+            "fast",
+            "slow",
+            "deep"
+        )
         val maxLength = inputNumber * 2
         val filteredWords = wordsList.filter { it.length <= maxLength }
         var username = ""
         var totalLength = 0
 
-            while (totalLength < maxLength && username.length < inputNumber) {
-                val randomWord = filteredWords.random()
-                if (totalLength + randomWord.length <= maxLength) {
-                    username += randomWord
-                    totalLength += randomWord.length
-                }
+        while (totalLength < maxLength && username.length < inputNumber) {
+            val randomWord = filteredWords.random()
+            if (totalLength + randomWord.length <= maxLength) {
+                username += randomWord
+                totalLength += randomWord.length
             }
+        }
         val randomString4 = username.take(inputNumber).replaceFirstChar { it.uppercase() }
 
 
@@ -77,17 +111,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setBtnsMinusAndPlus() {
+        var userNumber = 0
 
         binding.btnMinus.setOnClickListener {
-            val userNumber = binding.etCount.text.toString().toInt()
+            if (binding.etCount.text.toString().isNullOrBlank()) {
+                userNumber = 0
+            } else {
+                userNumber = binding.etCount.text.toString().toInt()
+            }
             if (userNumber > 1) {
                 binding.etCount.setText("${userNumber - 1}")
+                userNumber--
             }
         }
 
         binding.btnPlus.setOnClickListener {
-            val userNumber = binding.etCount.text.toString().toInt()
+            if (binding.etCount.text.toString().isNullOrBlank()) {
+                userNumber = 0
+            } else {
+                userNumber = binding.etCount.text.toString().toInt()
+            }
+
             binding.etCount.setText("${userNumber + 1}")
+            userNumber++
 
         }
 
